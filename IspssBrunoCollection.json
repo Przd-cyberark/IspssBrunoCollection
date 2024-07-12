@@ -1,0 +1,503 @@
+{
+  "name": "ISPSS",
+  "version": "1",
+  "items": [
+    {
+      "type": "http",
+      "name": "Get Bearer Token",
+      "seq": 1,
+      "request": {
+        "url": "https://{{ispss_api_url}}/oauth2/platformtoken",
+        "method": "POST",
+        "headers": [],
+        "params": [],
+        "body": {
+          "mode": "formUrlEncoded",
+          "formUrlEncoded": [
+            {
+              "name": "grant_type",
+              "value": "client_credentials",
+              "enabled": true
+            },
+            {
+              "name": "client_id",
+              "value": "oauthservice@cyberark.cloud.14643",
+              "enabled": true
+            },
+            {
+              "name": "client_secret",
+              "value": "Kobura!234",
+              "enabled": true
+            }
+          ],
+          "multipartForm": [
+            {
+              "type": "text",
+              "name": "grant_type",
+              "value": "client_credentials",
+              "enabled": true
+            },
+            {
+              "type": "text",
+              "name": "client_id",
+              "value": "api@l-poc.org",
+              "enabled": true
+            },
+            {
+              "type": "text",
+              "name": "client_secret",
+              "value": "Kobura!234",
+              "enabled": true
+            }
+          ]
+        },
+        "script": {
+          "res": "//let data = res.getBody();\n//bru.setVar(\"bearer_token\", res.getBody());  \n\n//let data = res.getBody();\n//bru.setEnvVar(\"bearer_token\",data.token);\n"
+        },
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "auth": {
+          "mode": "none"
+        }
+      }
+    },
+    {
+      "type": "folder",
+      "name": "SCA",
+      "items": [
+        {
+          "type": "http",
+          "name": "Policies",
+          "seq": 1,
+          "request": {
+            "url": "https://{{ispss_subdomain}}.cyberark.cloud/api/policies",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "{{bearer_token}}"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Get job status",
+          "seq": 5,
+          "request": {
+            "url": "https://{{ispss_subdomain}}.sca.cyberark.cloud/api/integrations/status?jobId={{job_id}}",
+            "method": "GET",
+            "headers": [],
+            "params": [
+              {
+                "name": "jobId",
+                "value": "{{job_id}}",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "",
+              "formUrlEncoded": [
+                {
+                  "name": "jobId",
+                  "value": "{{job_id}}",
+                  "enabled": true
+                }
+              ],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "{{bearer_token}}"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Get Policy",
+          "seq": 4,
+          "request": {
+            "url": "https://{{ispss_subdomain}}.sca.cyberark.cloud/api/policies/{{policy_id}}",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "{{bearer_token}}"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "SCA Rescan",
+          "seq": 2,
+          "request": {
+            "url": "https://przd-demo.sca.cyberark.cloud/api/cloud/rescan",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": false
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"cloudProvider\": 1,\n  \"accountType\": \"All\"\n }",
+              "formUrlEncoded": [
+                {
+                  "name": "cloudProvider",
+                  "value": "0",
+                  "enabled": true
+                },
+                {
+                  "name": "accountType",
+                  "value": "All",
+                  "enabled": true
+                }
+              ],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "{{bearer_token}}"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "SCA DIscovery",
+          "seq": 3,
+          "request": {
+            "url": "https://przd-demo.sca.cyberark.cloud/api/policies/discovery",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": false
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"csp\": \"AZURE\",\n  \"organization_id\": \"e71aeb89-a854-478e-a47d-ff577f15db60\",\n  \"account_info\": {\n    \"id\": \"df273dc6-6b99-4417-ab17-18811529018b\",\n    \"new_account\": true\n  }\n}",
+              "formUrlEncoded": [
+                {
+                  "name": "cloudProvider",
+                  "value": "0",
+                  "enabled": true
+                },
+                {
+                  "name": "accountType",
+                  "value": "All",
+                  "enabled": true
+                }
+              ],
+              "multipartForm": [
+                {
+                  "type": "text",
+                  "name": "",
+                  "value": "",
+                  "enabled": true
+                }
+              ]
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "{{bearer_token}}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "pCloud",
+      "items": [
+        {
+          "type": "http",
+          "name": "BYOK Configure",
+          "seq": 1,
+          "request": {
+            "url": "https://{{ispss_subdomain}}.privilegecloud.cyberark.cloud/api/byok/configure",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n    \"kms_arn\": \"arn:aws:kms:eu-west-2:533267113876:key/2ea3f143-7538-460e-93cb-7e09d6734a15\"\n}",
+              "formUrlEncoded": [
+                {
+                  "name": "kms_arn",
+                  "value": "arn:aws:kms:us-east-1:451947002982:key/0f4c088a-d6be-43ac-9b12-9ac2d480eee6",
+                  "enabled": true
+                }
+              ],
+              "multipartForm": [
+                {
+                  "type": "text",
+                  "name": "kms_arn",
+                  "value": "arn:aws:kms:us-east-1:451947002982:key/0f4c088a-d6be-43ac-9b12-9ac2d480eee6",
+                  "enabled": true
+                }
+              ]
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkE1RTk1ODcyRkJBNTlBNzcyRTI5OEMyRjAwQUM1NEE1RjQ2Q0VDRDUiLCJ4NXQiOiJwZWxZY3Z1bG1uY3VLWXd2QUt4VXBmUnM3TlUiLCJhcHBfaWQiOiJfX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjIn0.eyJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhcGlAY3liZXJhcmsuY2xvdWQuMjA3OTMiLCJmYW1pbHlfbmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwidGVuYW50X3N1YmRvbWFpbiI6Imh0dHBzOi8vYW9ieW9rLmN5YmVyYXJrLmNsb3VkIiwidW5pcXVlX25hbWUiOiJhcGlAY3liZXJhcmsuY2xvdWQuMjA3OTMiLCJpZGFwdGl2ZV90ZW5hbnRfaWQiOiJBQkk0NTkxIiwidGVuYW50X2lkIjoiOTRlMTBlYmEtZjUxNy00NzJhLTk4MjEtMGQ5YjkwYjkzMWZlIiwidXNlcl9yb2xlcyI6WyJTeXN0ZW0gQWRtaW5pc3RyYXRvciIsIlByaXZpbGVnZSBDbG91ZCBBZG1pbmlzdHJhdG9ycyIsIlByaXZpbGVnZSBDbG91ZCBBdWRpdG9ycyIsIlByaXZpbGVnZSBDbG91ZCBTZXNzaW9uIEFkbWluIiwiZ2xvYmFsIGF1ZGl0b3IiLCJDb25uZWN0b3IgTWFuYWdlbWVudCBBZG1pbiJdLCJpYXQiOjE3MTg4ODU3MjcsInN1YiI6Ijg3YzhjMmYyLTM3NjItNDE3Zi05N2IxLTZjMGEzMWRjZjE3YiIsImF1dGhfdGltZSI6MTcxODg4NTIzMCwiZXhwIjoxNzE4ODg2NjI3LCJ1c2VyX3V1aWQiOiI4N2M4YzJmMi0zNzYyLTQxN2YtOTdiMS02YzBhMzFkY2YxN2IiLCJzY29wZSI6Im9wZW5pZCBhcGkgcHJvZmlsZSIsImxhc3RfbG9naW4iOiIxNzE3NzY4OTg0IiwiYXVkIjoiX19pZGFwdGl2ZV9jeWJyX3VzZXJfb2lkYyIsImF3c19yZWdpb24iOiJ1cy1lYXN0LTEiLCJzdWJkb21haW4iOiJhb2J5b2siLCJjc3JmX3Rva2VuIjoiQU9nSU45QTlua1dlQktxejhyZlluWklXQ25kYVNYbDVvTFF6MndvZ2dPRTEiLCJpbnRlcm5hbF9zZXNzaW9uX2lkIjoibjJPVFBtVE9YMFNlMVZnRUNlT2hzcXFicG01QTlsbzMwQzd2TzE5MUhBWTEiLCJwbGF0Zm9ybV9kb21haW4iOiJjeWJlcmFyay5jbG91ZCIsImlzcyI6Imh0dHBzOi8vYWJpNDU5MS5pZC5jeWJlcmFyay5jbG91ZC9fX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjLyIsImF0X2hhc2giOiJ0alVoaGZjNTBZMTZQTTUxdDI2c1BRIiwibmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwiZ2l2ZW5fbmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwiRXh0ZXJuYWxVdWlkIjoiODdjOGMyZjItMzc2Mi00MTdmLTk3YjEtNmMwYTMxZGNmMTdiIn0.CEyXxmwqmXR9_YfJpqcLZhLc-lMTJ-3KVkKobiMG-R4xJrYt6jQSpJtUSgYSnpDYG_xcP_G89g5COyYgMljcA7yDd-msmGmWaPu-u8q2dsZWlbJ8kgX9YCDmnYLmkDF1JPcbl4AaCUC_jns-_QkqkX1ZZMf9eMuIxt_Ijed6BMRIgHe9W1Yxv_xGQpFBo_N_mJPmGMKnquxBcAhrPDLRzx7LsaztrPOe3AUGg3gk2wauCAIS2762s3uqKy5yl6rPSJPcujPvCoBx8xUIc9S0bc_sMmo9aXPGTBMsndcwkuhfn3FAIoDma0QPvDu9uWJwK7EKdWTiG_NhrS7DKrvZ4g"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "BYOK Enable",
+          "seq": 2,
+          "request": {
+            "url": "https://{{ispss_subdomain}}.privilegecloud.cyberark.cloud/api/byok/enable",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkE1RTk1ODcyRkJBNTlBNzcyRTI5OEMyRjAwQUM1NEE1RjQ2Q0VDRDUiLCJ4NXQiOiJwZWxZY3Z1bG1uY3VLWXd2QUt4VXBmUnM3TlUiLCJhcHBfaWQiOiJfX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjIn0.eyJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhcGlAY3liZXJhcmsuY2xvdWQuMjA3OTMiLCJmYW1pbHlfbmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwidGVuYW50X3N1YmRvbWFpbiI6Imh0dHBzOi8vYW9ieW9rLmN5YmVyYXJrLmNsb3VkIiwidW5pcXVlX25hbWUiOiJhcGlAY3liZXJhcmsuY2xvdWQuMjA3OTMiLCJpZGFwdGl2ZV90ZW5hbnRfaWQiOiJBQkk0NTkxIiwidGVuYW50X2lkIjoiOTRlMTBlYmEtZjUxNy00NzJhLTk4MjEtMGQ5YjkwYjkzMWZlIiwidXNlcl9yb2xlcyI6WyJTeXN0ZW0gQWRtaW5pc3RyYXRvciIsIlByaXZpbGVnZSBDbG91ZCBBZG1pbmlzdHJhdG9ycyIsIlByaXZpbGVnZSBDbG91ZCBBdWRpdG9ycyIsIlByaXZpbGVnZSBDbG91ZCBTZXNzaW9uIEFkbWluIiwiZ2xvYmFsIGF1ZGl0b3IiLCJDb25uZWN0b3IgTWFuYWdlbWVudCBBZG1pbiJdLCJpYXQiOjE3MTg4ODkzMzQsInN1YiI6Ijg3YzhjMmYyLTM3NjItNDE3Zi05N2IxLTZjMGEzMWRjZjE3YiIsImF1dGhfdGltZSI6MTcxODg4ODk1OCwiZXhwIjoxNzE4ODkwMjM0LCJ1c2VyX3V1aWQiOiI4N2M4YzJmMi0zNzYyLTQxN2YtOTdiMS02YzBhMzFkY2YxN2IiLCJzY29wZSI6Im9wZW5pZCBhcGkgcHJvZmlsZSIsImxhc3RfbG9naW4iOiIxNzE4ODg1NzI3IiwiYXVkIjoiX19pZGFwdGl2ZV9jeWJyX3VzZXJfb2lkYyIsImF3c19yZWdpb24iOiJ1cy1lYXN0LTEiLCJzdWJkb21haW4iOiJhb2J5b2siLCJjc3JmX3Rva2VuIjoieDBiQnNoWVJ4RWVIbXJ2UmMzNnoyR0laMENKV3ozdGFDeVhMWUJ2QUxIVTEiLCJpbnRlcm5hbF9zZXNzaW9uX2lkIjoiS0NtTzI5Nk0xV3hLS1gzSVdFX0Q3eHJ6c3hYb1VkeENyWS0yRUNhVG5rODEiLCJwbGF0Zm9ybV9kb21haW4iOiJjeWJlcmFyay5jbG91ZCIsImlzcyI6Imh0dHBzOi8vYWJpNDU5MS5pZC5jeWJlcmFyay5jbG91ZC9fX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjLyIsImF0X2hhc2giOiI1UUpkQlo1bVFWOWRYYmQ3T1p0Tk9nIiwibmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwiZ2l2ZW5fbmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwiRXh0ZXJuYWxVdWlkIjoiODdjOGMyZjItMzc2Mi00MTdmLTk3YjEtNmMwYTMxZGNmMTdiIn0.rsKv9EtEK6txybWpHBY56FcVGuAVSrb9vSvoBzkN08m0LKsnbmOmaBdfrYHciLPGTJVii1w7W3otsYZxQDSrZ_nnhxdImUCKn3NNdDMPgj1Le6S8ZQUKkSmt0zX5186F2Hn66w_IEGcwQGDJTxsFlA9QpWdE6RH7JSpTRHFgyRBxzNLX827j3cUiD1Rg6H0TngDrIcNjxjd347tm4SgxRg98ZpVHnGpVNRyrPIZPRZLA9MD5QGCgV27UypSEn3zzvml7hvH8j4zQDF9_vwrLp7LswHHXkBmC3Ii2bN0yNNiKW6AUDL4NX3pa1K20qOLLIOixeX1BavB0qSuvdlkmYA"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "BYOK Status",
+          "seq": 4,
+          "request": {
+            "url": "https://{{ispss_subdomain}}.privilegecloud.cyberark.cloud/api/byok",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkE1RTk1ODcyRkJBNTlBNzcyRTI5OEMyRjAwQUM1NEE1RjQ2Q0VDRDUiLCJ4NXQiOiJwZWxZY3Z1bG1uY3VLWXd2QUt4VXBmUnM3TlUiLCJhcHBfaWQiOiJfX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjIn0.eyJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhcGlAY3liZXJhcmsuY2xvdWQuMjA3OTMiLCJmYW1pbHlfbmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwidGVuYW50X3N1YmRvbWFpbiI6Imh0dHBzOi8vYW9ieW9rLmN5YmVyYXJrLmNsb3VkIiwidW5pcXVlX25hbWUiOiJhcGlAY3liZXJhcmsuY2xvdWQuMjA3OTMiLCJpZGFwdGl2ZV90ZW5hbnRfaWQiOiJBQkk0NTkxIiwidGVuYW50X2lkIjoiOTRlMTBlYmEtZjUxNy00NzJhLTk4MjEtMGQ5YjkwYjkzMWZlIiwidXNlcl9yb2xlcyI6WyJTeXN0ZW0gQWRtaW5pc3RyYXRvciIsIlByaXZpbGVnZSBDbG91ZCBBZG1pbmlzdHJhdG9ycyIsIlByaXZpbGVnZSBDbG91ZCBBdWRpdG9ycyIsIlByaXZpbGVnZSBDbG91ZCBTZXNzaW9uIEFkbWluIiwiZ2xvYmFsIGF1ZGl0b3IiLCJDb25uZWN0b3IgTWFuYWdlbWVudCBBZG1pbiJdLCJpYXQiOjE3MTg4ODkzMzQsInN1YiI6Ijg3YzhjMmYyLTM3NjItNDE3Zi05N2IxLTZjMGEzMWRjZjE3YiIsImF1dGhfdGltZSI6MTcxODg4ODk1OCwiZXhwIjoxNzE4ODkwMjM0LCJ1c2VyX3V1aWQiOiI4N2M4YzJmMi0zNzYyLTQxN2YtOTdiMS02YzBhMzFkY2YxN2IiLCJzY29wZSI6Im9wZW5pZCBhcGkgcHJvZmlsZSIsImxhc3RfbG9naW4iOiIxNzE4ODg1NzI3IiwiYXVkIjoiX19pZGFwdGl2ZV9jeWJyX3VzZXJfb2lkYyIsImF3c19yZWdpb24iOiJ1cy1lYXN0LTEiLCJzdWJkb21haW4iOiJhb2J5b2siLCJjc3JmX3Rva2VuIjoieDBiQnNoWVJ4RWVIbXJ2UmMzNnoyR0laMENKV3ozdGFDeVhMWUJ2QUxIVTEiLCJpbnRlcm5hbF9zZXNzaW9uX2lkIjoiS0NtTzI5Nk0xV3hLS1gzSVdFX0Q3eHJ6c3hYb1VkeENyWS0yRUNhVG5rODEiLCJwbGF0Zm9ybV9kb21haW4iOiJjeWJlcmFyay5jbG91ZCIsImlzcyI6Imh0dHBzOi8vYWJpNDU5MS5pZC5jeWJlcmFyay5jbG91ZC9fX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjLyIsImF0X2hhc2giOiI1UUpkQlo1bVFWOWRYYmQ3T1p0Tk9nIiwibmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwiZ2l2ZW5fbmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwiRXh0ZXJuYWxVdWlkIjoiODdjOGMyZjItMzc2Mi00MTdmLTk3YjEtNmMwYTMxZGNmMTdiIn0.rsKv9EtEK6txybWpHBY56FcVGuAVSrb9vSvoBzkN08m0LKsnbmOmaBdfrYHciLPGTJVii1w7W3otsYZxQDSrZ_nnhxdImUCKn3NNdDMPgj1Le6S8ZQUKkSmt0zX5186F2Hn66w_IEGcwQGDJTxsFlA9QpWdE6RH7JSpTRHFgyRBxzNLX827j3cUiD1Rg6H0TngDrIcNjxjd347tm4SgxRg98ZpVHnGpVNRyrPIZPRZLA9MD5QGCgV27UypSEn3zzvml7hvH8j4zQDF9_vwrLp7LswHHXkBmC3Ii2bN0yNNiKW6AUDL4NX3pa1K20qOLLIOixeX1BavB0qSuvdlkmYA"
+              }
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "BYOK Disable",
+          "seq": 3,
+          "request": {
+            "url": "https://{{ispss_subdomain}}.privilegecloud.cyberark.cloud/api/byok/disable",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "bearer",
+              "bearer": {
+                "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkE1RTk1ODcyRkJBNTlBNzcyRTI5OEMyRjAwQUM1NEE1RjQ2Q0VDRDUiLCJ4NXQiOiJwZWxZY3Z1bG1uY3VLWXd2QUt4VXBmUnM3TlUiLCJhcHBfaWQiOiJfX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjIn0.eyJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhcGlAY3liZXJhcmsuY2xvdWQuMjA3OTMiLCJmYW1pbHlfbmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwidGVuYW50X3N1YmRvbWFpbiI6Imh0dHBzOi8vYW9ieW9rLmN5YmVyYXJrLmNsb3VkIiwidW5pcXVlX25hbWUiOiJhcGlAY3liZXJhcmsuY2xvdWQuMjA3OTMiLCJpZGFwdGl2ZV90ZW5hbnRfaWQiOiJBQkk0NTkxIiwidGVuYW50X2lkIjoiOTRlMTBlYmEtZjUxNy00NzJhLTk4MjEtMGQ5YjkwYjkzMWZlIiwidXNlcl9yb2xlcyI6WyJTeXN0ZW0gQWRtaW5pc3RyYXRvciIsIlByaXZpbGVnZSBDbG91ZCBBZG1pbmlzdHJhdG9ycyIsIlByaXZpbGVnZSBDbG91ZCBBdWRpdG9ycyIsIlByaXZpbGVnZSBDbG91ZCBTZXNzaW9uIEFkbWluIiwiZ2xvYmFsIGF1ZGl0b3IiLCJDb25uZWN0b3IgTWFuYWdlbWVudCBBZG1pbiJdLCJpYXQiOjE3MTc2ODc3NjIsInN1YiI6Ijg3YzhjMmYyLTM3NjItNDE3Zi05N2IxLTZjMGEzMWRjZjE3YiIsImF1dGhfdGltZSI6MTcxNzA5MjcwNiwiZXhwIjoxNzE3Njg4NjYyLCJ1c2VyX3V1aWQiOiI4N2M4YzJmMi0zNzYyLTQxN2YtOTdiMS02YzBhMzFkY2YxN2IiLCJzY29wZSI6Im9wZW5pZCBhcGkgcHJvZmlsZSIsImxhc3RfbG9naW4iOiIxNzE3MDkxNTU5IiwiYXVkIjoiX19pZGFwdGl2ZV9jeWJyX3VzZXJfb2lkYyIsImF3c19yZWdpb24iOiJ1cy1lYXN0LTEiLCJzdWJkb21haW4iOiJhb2J5b2siLCJjc3JmX3Rva2VuIjoieklUOUlRejd0VW1OVm5YeF9tTnYxSjBLdktpXzZteUdjQkYwU2ZjcnpUQTEiLCJpbnRlcm5hbF9zZXNzaW9uX2lkIjoiSXh2enJ5YnAzcHJIWnNCb0J2Yi1wUTN5RXZOaGhTNUdvdDZvdEhGNW1LODEiLCJwbGF0Zm9ybV9kb21haW4iOiJjeWJlcmFyay5jbG91ZCIsImlzcyI6Imh0dHBzOi8vYWJpNDU5MS5pZC5jeWJlcmFyay5jbG91ZC9fX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjLyIsImF0X2hhc2giOiJPekhfeTczNkNGVGdicDZsSGp6eXdBIiwibmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwiZ2l2ZW5fbmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwiRXh0ZXJuYWxVdWlkIjoiODdjOGMyZjItMzc2Mi00MTdmLTk3YjEtNmMwYTMxZGNmMTdiIn0.A2g4f6I9IQQKUa2nAdfyz9EGQItdnbI9AbQlD6emazt9T4IaiW5_eQci4IYhozwY8Zf0EkEgoinKDL6KCrlyArZqti5cqKWGFXXF0cgqqsHy3GwL2idQIKPjQUzT3gaa1tBr205oHIlCyf5cc37TYbMHqtH0Vz7w9iuE110P9V0EnbSpBPF9Z03alFAP6VIlAQbdq3-4tSK7nKPgNf_hWFIbuHhYVEX7in0XyUdBqu0vQq8pJYsLr9-EkgK_vAZv_H2fmbcNYHfY5ZmSCsUm98m9p9eWnCgs6hpi6r8DhC1e-BFh9dXy34Xlr7cWeSzsUxffAYiAVMmPmonlDJxFPw"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "activeEnvironmentUid": "5Cu14mMvibDCreHTJMc8L",
+  "environments": [
+    {
+      "variables": [
+        {
+          "name": "ispss_api_url",
+          "value": "aaq4799.id.cyberark.cloud",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "ispss_subdomain",
+          "value": "landg-poc",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "bearer_token",
+          "value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkE1RTk1ODcyRkJBNTlBNzcyRTI5OEMyRjAwQUM1NEE1RjQ2Q0VDRDUiLCJ4NXQiOiJwZWxZY3Z1bG1uY3VLWXd2QUt4VXBmUnM3TlUiLCJhcHBfaWQiOiJfX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjIn0.eyJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhcGlAY3liZXJhcmsuY2xvdWQuMjA3OTMiLCJmYW1pbHlfbmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwidGVuYW50X3N1YmRvbWFpbiI6Imh0dHBzOi8vYW9ieW9rLmN5YmVyYXJrLmNsb3VkIiwidW5pcXVlX25hbWUiOiJhcGlAY3liZXJhcmsuY2xvdWQuMjA3OTMiLCJpZGFwdGl2ZV90ZW5hbnRfaWQiOiJBQkk0NTkxIiwidGVuYW50X2lkIjoiOTRlMTBlYmEtZjUxNy00NzJhLTk4MjEtMGQ5YjkwYjkzMWZlIiwidXNlcl9yb2xlcyI6WyJTeXN0ZW0gQWRtaW5pc3RyYXRvciIsIlByaXZpbGVnZSBDbG91ZCBBZG1pbmlzdHJhdG9ycyIsIlByaXZpbGVnZSBDbG91ZCBBdWRpdG9ycyIsIlByaXZpbGVnZSBDbG91ZCBTZXNzaW9uIEFkbWluIiwiZ2xvYmFsIGF1ZGl0b3IiLCJDb25uZWN0b3IgTWFuYWdlbWVudCBBZG1pbiJdLCJpYXQiOjE3MTY5OTQwMjEsInN1YiI6Ijg3YzhjMmYyLTM3NjItNDE3Zi05N2IxLTZjMGEzMWRjZjE3YiIsImF1dGhfdGltZSI6MTcxNjk5MzA1NywiZXhwIjoxNzE2OTk0OTIxLCJ1c2VyX3V1aWQiOiI4N2M4YzJmMi0zNzYyLTQxN2YtOTdiMS02YzBhMzFkY2YxN2IiLCJzY29wZSI6Im9wZW5pZCBhcGkgcHJvZmlsZSIsImxhc3RfbG9naW4iOiIwIiwiYXVkIjoiX19pZGFwdGl2ZV9jeWJyX3VzZXJfb2lkYyIsImF3c19yZWdpb24iOiJ1cy1lYXN0LTEiLCJzdWJkb21haW4iOiJhb2J5b2siLCJjc3JmX3Rva2VuIjoianBNbHpWaGNhRWVlQXowNzFoY3VXVFBzeWdSREk5Rk5RS2t3ek5VcVpFdzEiLCJpbnRlcm5hbF9zZXNzaW9uX2lkIjoiU1RDc05mYW9uMGlzelY3QzRZNkdEMGV0dWlDeXpEZEZLZXNxa0ZTU0xaODEiLCJwbGF0Zm9ybV9kb21haW4iOiJjeWJlcmFyay5jbG91ZCIsImlzcyI6Imh0dHBzOi8vYWJpNDU5MS5pZC5jeWJlcmFyay5jbG91ZC9fX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjLyIsImF0X2hhc2giOiJKUGxhZVN5eW5tUXB6TXhPbUpmRFBnIiwibmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwiZ2l2ZW5fbmFtZSI6ImNocmlzLmdhbGF6a2FAY3liZXJhcmsuY29tIiwiRXh0ZXJuYWxVdWlkIjoiODdjOGMyZjItMzc2Mi00MTdmLTk3YjEtNmMwYTMxZGNmMTdiIn0.DBGMUWISMus7nQlDhfUmxJyRDt8kFkSOCDwLPp7U_EujhQ_CSyc5InuBDXjKpJhuAlFoaoUBO34pWTi6GOBGeDdklCGaM3CrvXXFHqKAfHH4BmmdPiIFtLvNvtJZ_OO89EgX2kMh3Ohf10D0UqrGCubuRHPGzt6-_E_iChJsmM8cI9ht2fkai0-QcKShBFd-kr5Z89lNwcAHl937KF5dk158ES-bvcV1yMUTtBzV2a84bqhpV8mN74Dw1MNfFgAKsubiBVzLWblfpdj2QAaut9WpdJbYOHD69wjO4St5DMgyuk_d1p4k0N3J7oo4JzDcGyzvwcMsEszaNdMkh3htag",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "Auth",
+          "value": "",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "ispss_api_secret",
+          "value": "",
+          "enabled": true,
+          "secret": true,
+          "type": "text"
+        }
+      ],
+      "name": "LPOC"
+    },
+    {
+      "variables": [
+        {
+          "name": "ispss_api_url",
+          "value": "abb4958.id.cyberark.cloud",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "ispss_subdomain",
+          "value": "przd-demo",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "bearer_token",
+          "value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjEwMzBDQ0UyMkZBQjg5NkIzMjQ5QTkxRTlCMzI1MkY4MDNCNTFCMkIiLCJ4NXQiOiJFRERNNGktcmlXc3lTYWtlbXpKUy1BTzFHeXMiLCJhcHBfaWQiOiJfX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjIn0.eyJwcmVmZXJyZWRfdXNlcm5hbWUiOiJvYXV0aHNlcnZpY2VAY3liZXJhcmsuY2xvdWQuMTQ2NDMiLCJmYW1pbHlfbmFtZSI6IlVzZXIiLCJ0ZW5hbnRfc3ViZG9tYWluIjoiaHR0cHM6Ly9wcnpkLWRlbW8uY3liZXJhcmsuY2xvdWQiLCJ1bmlxdWVfbmFtZSI6Im9hdXRoc2VydmljZUBjeWJlcmFyay5jbG91ZC4xNDY0MyIsImlkYXB0aXZlX3RlbmFudF9pZCI6IkFCQjQ5NTgiLCJ0ZW5hbnRfaWQiOiI4NWY4Y2MxMi00MTEzLTQ0YjUtYWI0MC05MWNhMzZjMjJiYzkiLCJ1c2VyX3JvbGVzIjpbIlNDQUFwaUZ1bGxBY2Nlc3MiLCJTQ0FBcGlSZWFkT25seSJdLCJpYXQiOjE3MjA3NzczNDcsInN1YiI6IjUwNzUwNTA0LTBhNDUtNDk1OC04OGVmLTcyNmNlNzA2NmRlYiIsImF1dGhfdGltZSI6MTcyMDc3NDgzMCwiZXhwIjoxNzIwNzc4MjQ3LCJ1c2VyX3V1aWQiOiI1MDc1MDUwNC0wYTQ1LTQ5NTgtODhlZi03MjZjZTcwNjZkZWIiLCJzY29wZSI6Im9wZW5pZCBhcGkgcHJvZmlsZSIsImxhc3RfbG9naW4iOiIxNzIwNzc0MzU5IiwiYXVkIjoiX19pZGFwdGl2ZV9jeWJyX3VzZXJfb2lkYyIsImF3c19yZWdpb24iOiJldS13ZXN0LTIiLCJzdWJkb21haW4iOiJwcnpkLWRlbW8iLCJjc3JmX3Rva2VuIjoiRHBCbDJFOEM2aUJwbldjVTIyVDJ0MnF4N3k0dzhZcExpeE41UTVWR0RDTTEiLCJpbnRlcm5hbF9zZXNzaW9uX2lkIjoiM2daQU5MQmRxME9yTW1oVzJ1QUN6OFkwb1FWQTF6aW4zZElSVTB0THdXUTEiLCJwbGF0Zm9ybV9kb21haW4iOiJjeWJlcmFyay5jbG91ZCIsImlzcyI6Imh0dHBzOi8vYWJiNDk1OC5pZC5jeWJlcmFyay5jbG91ZC9fX2lkYXB0aXZlX2N5YnJfdXNlcl9vaWRjLyIsImF0X2hhc2giOiJCbEtSVVZaZzRNbEhTVTZTVm5vR05nIiwibmFtZSI6Ik9BdXRoU2VydmljZSBVc2VyIiwiZ2l2ZW5fbmFtZSI6Ik9BdXRoU2VydmljZSIsIkV4dGVybmFsVXVpZCI6IjUwNzUwNTA0LTBhNDUtNDk1OC04OGVmLTcyNmNlNzA2NmRlYiJ9.dtfo_kxeIRxPSxNQhuqFBXXZrptpPsanIIxXbr_C35C6cUiV6iI_FUedOd3pdMNZ9U-4xk9DD95SgWbLVGpBdJHHBOtR0vmbPYpcJQmX9O3wY7q9fVYdAplMgjnm9rhakjw7VXqoeiTf2Y1ceq5uQk6A1Uo8o1aiLI_BaXZdc2Y6Vyvn7CHlx19r47pbelHyrWNJbjp5KuPTOPLBqykVkY5dP8goTysKyYNZbCz6RcGdJMJzoI8blyP5tRJAc7L7GgpFWI7W4FQ7pD_bxH7Xzz43MAHZAAeESpD2P-EYXZwpoeD0iEFIv4m5zhxFhu7QHHOcuaiLZ8BHlDJY9xF_IA",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "Auth",
+          "value": "",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "policy_id",
+          "value": "aws_sso_f457b604-38b6-4672-8f40-64340e1ca0b0",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "job_id",
+          "value": "412f0438-1678-4661-a7c6-0a9bce108380",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "ispss_client_id",
+          "value": "oauthservice@cyberark.cloud.14643",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "ispss_client_secret",
+          "value": "Kobura!234",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "ispss_c",
+          "value": "",
+          "enabled": true,
+          "secret": true,
+          "type": "text"
+        }
+      ],
+      "name": "PrzD Demo"
+    }
+  ],
+  "brunoConfig": {
+    "version": "1",
+    "name": "ISPSS",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ]
+  }
+}
